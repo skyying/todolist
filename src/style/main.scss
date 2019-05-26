@@ -64,7 +64,8 @@ body {
       border-radius: 50%;
       &:hover{
         background: rgba(255,255,255,0.2);
-        transition: 0.2s;
+        background-position: center center;
+        transition: 0.1s;
       }
     }
     input[type="checkbox"]:checked ~ div {
@@ -72,7 +73,6 @@ body {
       background: transparent url("../images/check.svg");
       background-repeat: no-repeat;
       background-position: center center;
-
     }
   }
   .edit-mode{
