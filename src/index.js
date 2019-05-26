@@ -1,21 +1,16 @@
-import React, {useState, useEffect} from "react";
-import ReactDOM from "react-dom";
-
 import "typeface-roboto";
 import "./style/reset.scss";
 import "./style/main.scss";
 
-import Todo from "./components/todo.js";
+import React, {useState, useEffect} from "react";
+import ReactDOM from "react-dom";
+
 import AddTodo from "./components/add.todo.js";
-import {intialTodos} from "./components/initial.todos.js";
+import {initialTask} from "./components/initial.task.js";
+import Task from "./components/task.js";
 
-
-
-
-
-
-function TodoApp() {
-  const [todos, setTodos] = useState(intialTodos);
+function TodoList() {
+  const [todos, setTodos] = useState(initialTask);
 
   useEffect(
     () => {
@@ -24,68 +19,70 @@ function TodoApp() {
     [todos]
   );
 
-  const [current, setCurrent] = useState(null);
+  const [currentEditingTaskIndex, setCurrentEditingTaskIndex] = useState(
+    null
+  );
 
   function handleTaskContentChange(content, idx) {
     if (!content.length) {
-      setCurrent(null);
+      setCurrentEditingTaskIndex(null);
       return;
     }
     let todoCopy = todos.slice();
     todoCopy[idx]["content"] = content;
     setTodos(todoCopy);
-    setCurrent(null);
+    setCurrentEditingTaskIndex(null);
   }
 
-  function handleChecked(isChecked, idx) {
-    let todoCopy = todos.slice();
-    todoCopy[idx]["checked"] = isChecked;
-    setTodos(todoCopy);
-  }
-
-  function handleDelete(idx) {
-    setTodos(todos.filter((todo, id) => id !== idx));
-    setCurrent(null);
-  }
-
-  function addTodo() {
+  function createTask() {
     if (todos.length && !todos[todos.length - 1].content.length) {
       return;
     }
+
     let todoCopy = todos.slice();
-    let emptyTodo = {id: Date.now(), content: "", checked: false};
-    todoCopy.push(emptyTodo);
+    todoCopy.push({id: Date.now(), content: "", isCompleted: false});
     setTodos(todoCopy);
-    setCurrent(todoCopy.length - 1);
+    setCurrentEditingTaskIndex(todoCopy.length - 1);
   }
 
-  let todoOperations = {
-    handleDelete: handleDelete,
-    handleChecked: handleChecked,
-    setCurrent: setCurrent,
+  function handleTaskCompletion(isCompleted, idx) {
+    let todoCopy = todos.slice();
+    todoCopy[idx]["isCompleted"] = isCompleted;
+    setTodos(todoCopy);
+  }
+
+  function handleTaskDeletion(idx) {
+    setTodos(todos.filter((todo, id) => id !== idx));
+    setCurrentEditingTaskIndex(null);
+  }
+
+  let taskOperations = {
+    handleTaskDeletion: handleTaskDeletion,
+    handleTaskCompletion: handleTaskCompletion,
+    setCurrentTaskEditable: setCurrentEditingTaskIndex,
     handleTaskContentChange: handleTaskContentChange
   };
 
-  let todoList = todos.map((todo, idx) => (
-    <div>
+  let todoList = todos.map((task, idx) => (
+    <div key={`${task.id}-${task.content}-${task.isCompleted}`}>
       {
-        <Todo
-          key={`${todo.id}-${todo.content}-${todo.checked}`}
+        <Task
           idx={idx}
-          current={idx === current}
-          todo={todo}
-          operations={todoOperations}
+          isEditable={idx === currentEditingTaskIndex}
+          task={task}
+          operations={taskOperations}
         />
       }
     </div>
   ));
+
   return (
     <div>
       <h1>Getting things done</h1>
       {todoList}
-      <AddTodo addTodo={addTodo} />
+      <AddTodo addTodo={createTask} />
     </div>
   );
 }
 
-ReactDOM.render(<TodoApp />, document.getElementById("main"));
+ReactDOM.render(<TodoList />, document.getElementById("main"));
