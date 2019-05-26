@@ -2,58 +2,45 @@ import "typeface-roboto";
 import "./style/reset.scss";
 import "./style/main.scss";
 
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
 import AddTodo from "./components/add.todo.js";
-import {initialTask} from "./components/initial.task.js";
+import { initialTask } from "./components/initial.task.js";
 import Task from "./components/task.js";
 
 function TodoList() {
+  //
   const [todos, setTodos] = useState(initialTask);
 
-  useEffect(
-    () => {
-      setTodos(todos);
-    },
-    [todos]
-  );
+  useEffect(() => {
+    setTodos(todos);
+  }, [todos]);
 
-  const [currentEditingTaskIndex, setCurrentEditingTaskIndex] = useState(
-    null
-  );
+  const [currentEditingTaskIndex, setCurrentEditingTaskIndex] = useState(false);
 
   function handleTaskContentChange(content, idx) {
-    if (!content.length) {
-      setCurrentEditingTaskIndex(null);
-      return;
-    }
-    let todoCopy = todos.slice();
-    todoCopy[idx]["content"] = content;
-    setTodos(todoCopy);
-    setCurrentEditingTaskIndex(null);
+    todos[idx]["content"] = content;
+    setTodos(todos);
   }
 
   function createTask() {
     if (todos.length && !todos[todos.length - 1].content.length) {
       return;
     }
-
-    let todoCopy = todos.slice();
-    todoCopy.push({id: Date.now(), content: "", isCompleted: false});
-    setTodos(todoCopy);
-    setCurrentEditingTaskIndex(todoCopy.length - 1);
+    todos.push({ id: Date.now(), content: "", isCompleted: false });
+    setTodos(todos);
+    setCurrentEditingTaskIndex(todos.length - 1);
   }
 
   function handleTaskCompletion(isCompleted, idx) {
-    let todoCopy = todos.slice();
-    todoCopy[idx]["isCompleted"] = isCompleted;
-    setTodos(todoCopy);
+    todos[idx]["isCompleted"] = isCompleted;
+    setTodos(todos);
   }
 
   function handleTaskDeletion(idx) {
-    setTodos(todos.filter((todo, id) => id !== idx));
-    setCurrentEditingTaskIndex(null);
+    setTodos(todos.filter((_, id) => id !== idx));
+    setCurrentEditingTaskIndex(false);
   }
 
   let taskOperations = {
