@@ -1,7 +1,7 @@
 import React from "react";
-import {useFormInput, useCheckBoxInput} from "./use.custom.hook.js";
+import { useFormInput, useCheckBoxInput } from "./use.custom.hook.js";
 
-const Task = ({idx, task, isEditable, operations}) => {
+const Task = ({ idx, task, isEditable, operations }) => {
   let {
     handleTaskDeletion,
     handleTaskCompletion,
@@ -9,31 +9,38 @@ const Task = ({idx, task, isEditable, operations}) => {
     setCurrentTaskEditable
   } = operations;
 
-  let taskContentInput = useFormInput(task.content);
-  let taskCompletionCheckbox = useCheckBoxInput(task.isCompleted);
+  let { content, isCompleted } = task;
+  let taskContentInput = useFormInput(content);
+  let taskCompletionCheckbox = useCheckBoxInput(isCompleted);
 
   function handleTaskCancel() {
-    if (!task.content.length) {
+    // delete task if it hasn't been saved yet
+    if (!content.length) {
       handleTaskDeletion(idx);
     } else {
-      taskContentInput.onChange({currentTarget: {value: task.content}});
+      // update input content to todos
+      taskContentInput.onChange({ currentTarget: { value: content } });
     }
-    setCurrentTaskEditable(null);
+    // disable editable
+    setCurrentTaskEditable(false);
   }
 
   function handleTaskSave() {
-    if (taskContentInput.value.length == 0) {
-      if (!task.content.length) {
-        return;
-      } else {
-        taskContentInput.onChange({
-          currentTarget: {value: task.content}
-        });
-        setCurrentTaskEditable(null);
-      }
-    } else {
+    // if users type something
+    if (taskContentInput.value.length) {
       handleTaskContentChange(taskContentInput.value, idx);
+    } else {
+      // if no input but has saved task content, recover it
+      if (task.content.length) {
+        taskContentInput.onChange({
+          currentTarget: { value: task.content }
+        });
+      } else {
+        return;
+      }
     }
+    // disable editable
+    setCurrentTaskEditable(false);
   }
 
   let checkbox = (
@@ -55,18 +62,17 @@ const Task = ({idx, task, isEditable, operations}) => {
       <div className="commands">
         <div>
           <button className="primary-btn" onClick={handleTaskSave}>
-                        Save
+            Save
           </button>
-          <button
-            className="secondary-btn"
-            onClick={handleTaskCancel}>
-                        Cancel
+          <button className="secondary-btn" onClick={handleTaskCancel}>
+            Cancel
           </button>
         </div>
         <button
           className="secondary-btn"
-          onClick={() => handleTaskDeletion(idx)}>
-                    Delete
+          onClick={() => handleTaskDeletion(idx)}
+        >
+          Delete
         </button>
       </div>
     </div>
@@ -77,7 +83,8 @@ const Task = ({idx, task, isEditable, operations}) => {
       {checkbox}
       <div
         className={task.isCompleted ? "content completed" : "content"}
-        onClick={() => setCurrentTaskEditable(idx)}>
+        onClick={() => setCurrentTaskEditable(idx)}
+      >
         {task.content}
       </div>
     </div>
