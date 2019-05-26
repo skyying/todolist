@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 
-export const useFormInput = initalValue => {
-  const [value, setValue] = useState(initalValue);
+export const useFormInput = initialValue => {
+  const [value, setValue] = useState(initialValue);
   function handleChange(e) {
     setValue(e.currentTarget.value);
   }
@@ -12,8 +12,8 @@ export const useFormInput = initalValue => {
 };
  
 
-export const useCheckBoxInput = initalValue => {
-  const [checked, setChecked] = useState(initalValue);
+export const useCheckBoxInput = initialValue => {
+  const [checked, setChecked] = useState(initialValue);
   function handleChange() {
     setChecked(!checked);
   }
