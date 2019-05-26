@@ -1,4 +1,7 @@
 export const initialTask = [
-  {id: Date.now(), content: "todo1", isCompleted: false}
+  {
+    id: Date.now(),
+    content: "Add some todo by click button below",
+    isCompleted: false
+  }
 ];
-

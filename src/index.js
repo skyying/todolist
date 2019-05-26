@@ -9,14 +9,15 @@ import AddTodo from "./components/add.todo.js";
 import { initialTask } from "./components/initial.task.js";
 import Task from "./components/task.js";
 
-function TodoList() {
-  //
+const TodoList = () => {
+  // [task1, task2, task3]
   const [todos, setTodos] = useState(initialTask);
 
   useEffect(() => {
     setTodos(todos);
   }, [todos]);
 
+  // index of todos, default is false means no todos are editable
   const [currentEditingTaskIndex, setCurrentEditingTaskIndex] = useState(false);
 
   function handleTaskContentChange(content, idx) {
@@ -24,7 +25,8 @@ function TodoList() {
     setTodos(todos);
   }
 
-  function createTask() {
+  function handleTaskCreation() {
+    // if already create one new task but not enter anything
     if (todos.length && !todos[todos.length - 1].content.length) {
       return;
     }
@@ -67,9 +69,9 @@ function TodoList() {
     <div>
       <h1>Getting things done</h1>
       {todoList}
-      <AddTodo addTodo={createTask} />
+      <AddTodo addTodo={handleTaskCreation} />
     </div>
   );
-}
+};
 
 ReactDOM.render(<TodoList />, document.getElementById("main"));

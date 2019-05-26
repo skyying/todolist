@@ -1,7 +1,8 @@
 import React from "react";
-import { useFormInput, useCheckBoxInput } from "./use.custom.hook.js";
+import PropTypes from "prop-types";
+import {useFormInput, useCheckBoxInput} from "./use.custom.hook.js";
 
-const Task = ({ idx, task, isEditable, operations }) => {
+const Task = ({idx, task, isEditable, operations}) => {
   let {
     handleTaskDeletion,
     handleTaskCompletion,
@@ -9,7 +10,7 @@ const Task = ({ idx, task, isEditable, operations }) => {
     setCurrentTaskEditable
   } = operations;
 
-  let { content, isCompleted } = task;
+  let {content, isCompleted} = task;
   let taskContentInput = useFormInput(content);
   let taskCompletionCheckbox = useCheckBoxInput(isCompleted);
 
@@ -19,7 +20,7 @@ const Task = ({ idx, task, isEditable, operations }) => {
       handleTaskDeletion(idx);
     } else {
       // update input content to todos
-      taskContentInput.onChange({ currentTarget: { value: content } });
+      taskContentInput.onChange({currentTarget: {value: content}});
     }
     // disable editable
     setCurrentTaskEditable(false);
@@ -33,7 +34,7 @@ const Task = ({ idx, task, isEditable, operations }) => {
       // if no input but has saved task content, recover it
       if (task.content.length) {
         taskContentInput.onChange({
-          currentTarget: { value: task.content }
+          currentTarget: {value: task.content}
         });
       } else {
         return;
@@ -62,17 +63,18 @@ const Task = ({ idx, task, isEditable, operations }) => {
       <div className="commands">
         <div>
           <button className="primary-btn" onClick={handleTaskSave}>
-            Save
+                        Save
           </button>
-          <button className="secondary-btn" onClick={handleTaskCancel}>
-            Cancel
+          <button
+            className="secondary-btn"
+            onClick={handleTaskCancel}>
+                        Cancel
           </button>
         </div>
         <button
           className="secondary-btn"
-          onClick={() => handleTaskDeletion(idx)}
-        >
-          Delete
+          onClick={() => handleTaskDeletion(idx)}>
+                    Delete
         </button>
       </div>
     </div>
@@ -83,14 +85,20 @@ const Task = ({ idx, task, isEditable, operations }) => {
       {checkbox}
       <div
         className={task.isCompleted ? "content completed" : "content"}
-        onClick={() => setCurrentTaskEditable(idx)}
-      >
+        onClick={() => setCurrentTaskEditable(idx)}>
         {task.content}
       </div>
     </div>
   );
 
   return <div className="task">{isEditable ? editMode : viewMode}</div>;
+};
+
+Task.propTypes = {
+  idx: PropTypes.number,
+  task: PropTypes.object,
+  isEditable: PropTypes.bool,
+  operations: PropTypes.object
 };
 
 export default Task;
